@@ -1,2 +1,2 @@
 # 3D-Framing
-3D Wire Frame and Stryctural Modeling
+3D Wire Frame and Structural Modeling
