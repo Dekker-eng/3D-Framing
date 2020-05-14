@@ -115,8 +115,7 @@ CROSS_HR_COL = (200,200,200)
 SCRN_ASP_RATIO = 1.7777
 SCRN_WDTH = 1540
 SCRN_HGT = int(SCRN_WDTH/1.7777)
-ORIGIN_X = int(SCRN_WDTH/2)
-ORIGIN_Y = int(SCRN_HGT/2)
+
 
 # define plot paraameters
 FPS = 60
@@ -131,7 +130,9 @@ CURSOR_Y = 0
 # First-see window settings
 ANG_X = 27 # Elipse Plot Orientation in degrees
 ANG_Y = 330 # Nodal Plot Orientation in degrees
-Zoom_Fact = 1;
+Zoom_Fact = 1
+ORIGIN_X = int(SCRN_WDTH/2)
+ORIGIN_Y = int(SCRN_HGT/2)
 
 # Setting Out for Gimbal
 Gimbal_cords = [1,-150,100,100,
@@ -188,7 +189,7 @@ Gimbal_Lines=[1,1,2,
 ##Gimbal_ORIGIN_Y = int(SCRN_HGT*0.1)
 
 # Model Geometric Data - 
-# Nodes
+# Nodes (Set out from centre of origin)
 Input_Data = [1,-1500,1000,1000,
             2,1000,1000,1000,
             3,1000,1000,-1000,
@@ -249,6 +250,7 @@ def draw_text(surf, text, size, x, y):
 
 # Translates (moves) object relative to origin.
 def Translate_Object (Input_Data,Axis,Amount):#For Axis 1=X, 2=Y, 3=Z 
+
     for i in range(Input_Data[-4]):
         Input_Data [i*4+Axis] = Amount/Scale_Fact + Input_Data [i*4+1]
 
@@ -393,7 +395,19 @@ pygame.display.set_caption("FrameStudio - (LITE)")
 clock = pygame.time.Clock()
 
 # Convert Node Input Data to Node Screen Data
+
 Covert_Data (Input_Data,Node_Qty)
+
+# Record Obtect Reset Settings
+
+RESET_Input_Data = Input_Data
+RESET_ANG_X = ANG_X
+RESET_ANG_Y = ANG_Y
+RESET_Zoom_Fact = Zoom_Fact
+RESET_ORIGIN_X = ORIGIN_X
+RESET_ORIGIN_Y = ORIGIN_Y
+RESET_Nodes = Nodes
+RESET_NODAL_SCRN_CORDS = NODAL_SCRN_CORDS
 
 # Initiate Gimbal
 
@@ -405,7 +419,7 @@ running = True
 while running:
     clock.tick(FPS)
     screen.fill(BACKGRD)
-    NODAL_SCRN_CORDS =[]
+    NODAL_SCRN_CORDS = []
     
     """ Check for Keys Pressed"""   
     keystate = pygame.key.get_pressed()
@@ -441,7 +455,18 @@ while running:
         Nodes =[]
         Translate_Object (Input_Data,1,-7)
         Covert_Data (Input_Data,Node_Qty)       
-    if keystate[pygame.K_F3]: pass
+    if keystate[pygame.K_F10]: # Reset Object Position and parameters
+        Amount = 0
+        Input_Data = RESET_Input_Data
+        ANG_X = RESET_ANG_X
+        ANG_Y = RESET_ANG_Y
+        Zoom_Fact = RESET_Zoom_Fact
+        ORIGIN_X = RESET_ORIGIN_X 
+        ORIGIN_Y = RESET_ORIGIN_Y
+        NODAL_SCRN_CORDS = RESET_NODAL_SCRN_CORDS
+        X=0;Y=0;Z=0
+        Nodes = RESET_Nodes
+        
     # Check for application exit
     if keystate[pygame.K_F12]: # Exit Program                                    
         print ('Application Exited on Command!')
